@@ -12,7 +12,7 @@ This package contains four scripts for a Linux or WSL-based setup:
 Place the scripts in the same project root directory, for example:
 
 ```text
-~/net-sim/
+~/your-project-root/
 ├── build_omnetpp_env.sh
 ├── prepare_estnet_workspace.sh
 ├── set_estnet_time_ref.sh
@@ -24,12 +24,21 @@ Place the scripts in the same project root directory, for example:
 After running the build and prepare scripts, the directory will typically look like this:
 
 ```text
-~/net-sim/
+~/your-project-root/
 ├── omnetpp-5.5.1/
 ├── osgearth/
 ├── inet/
 ├── estnet/
 └── estnet-template/
+```
+
+## Recommended order
+
+```bash
+./build_omnetpp_env.sh
+./prepare_estnet_workspace.sh
+./set_estnet_time_ref.sh
+./run_omnetpp_ide.sh
 ```
 
 ## Script purpose
@@ -73,13 +82,14 @@ Use this before the first ESTNeT simulation run.
 
 What it does:
 - checks whether `estnet-template/simulations/omnetpp.ini` already contains a `GlobalJulianDate` time reference
-- by default, tries to use the example TLE file:
+- by default, first tries to use the example TLE file:
   - `./configs/tles/UWE3.tle`
-- if that TLE file is available, writes:
+- if that TLE file exists, writes:
   - `*.globalJulianDate.tleFile = "..."`
-- if no usable TLE file is found, falls back to:
+- otherwise falls back to:
   - `*.globalJulianDate.simulationStart = "..."`
-- does not write duplicate settings unless `FORCE_UPDATE=1`
+- avoids duplicate writes unless `FORCE_UPDATE=1`
+- safely handles ini files that do not end with a newline
 
 Run it with:
 
@@ -87,16 +97,16 @@ Run it with:
 ./set_estnet_time_ref.sh
 ```
 
-Example with explicit TLE path:
-
-```bash
-TLE_FILE=./configs/tles/UWE3.tle ./set_estnet_time_ref.sh
-```
-
 Example with forced update:
 
 ```bash
 FORCE_UPDATE=1 ./set_estnet_time_ref.sh
+```
+
+Example with explicit TLE path:
+
+```bash
+TLE_FILE=./configs/tles/UWE3.tle ./set_estnet_time_ref.sh
 ```
 
 ### 4. `run_omnetpp_ide.sh`
@@ -111,15 +121,6 @@ What it does:
 Run it with:
 
 ```bash
-./run_omnetpp_ide.sh
-```
-
-## Recommended order
-
-```bash
-./build_omnetpp_env.sh
-./prepare_estnet_workspace.sh
-./set_estnet_time_ref.sh
 ./run_omnetpp_ide.sh
 ```
 

@@ -6,10 +6,6 @@ ROOT_DIR="${ROOT_DIR:-$SCRIPT_DIR}"
 OMNETPP_DIR="${OMNETPP_DIR:-$ROOT_DIR/omnetpp-5.5.1}"
 INET_DIR="${INET_DIR:-$ROOT_DIR/inet}"
 
-export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH:-}"
-export OSG_FILE_PATH="$ROOT_DIR/osgearth/data:${OSG_FILE_PATH:-}"
-export OSGEARTH_FILE_PATH="$ROOT_DIR/osgearth/data:${OSGEARTH_FILE_PATH:-}"
-
 if [ ! -f "$OMNETPP_DIR/setenv" ]; then
   echo "ERROR: setenv not found: $OMNETPP_DIR/setenv" >&2
   exit 1
