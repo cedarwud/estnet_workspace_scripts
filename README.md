@@ -50,11 +50,18 @@ chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh
 - Default osgEarth tag: `osgearth-2.10`
 - This package is written to use `2.10` by default.
 - Unless you specifically need an older tag, do not switch back to `2.7`.
-- On ARM64 / aarch64 machines, use the dedicated ARM CPU build mode to disable FastDXT:
+- On ARM64 / aarch64 machines, use the dedicated ARM CPU build mode. It automatically disables FastDXT and also handles the `/usr/local/lib64` linker path problem seen on ARM installs:
 
 ```bash
 ./build_omnetpp_env.sh arm_cpu
 ```
+
+ARM mode behavior:
+- disables FastDXT (`-DOSGEARTH_ENABLE_FASTDXT=OFF`)
+- requests install into `/usr/local/lib`
+- if osgEarth still lands in `/usr/local/lib64`, auto-registers that path with `ldconfig`
+- runs OMNeT++ `./configure` with ARM-friendly include/library flags
+- exports `PATH` so OMNeT++ `make` does not stop at the `bin is not in the path` check
 
 ## Important practical note about time reference and 3D rendering
 
@@ -114,6 +121,7 @@ Optional variables:
 - `RESET_OSGEARTH_TREE`
 - `OSGEARTH_CMAKE_ARGS`
 - positional build mode: `default` or `arm_cpu`
+- in `arm_cpu` mode, the script also passes ARM-friendly `CPPFLAGS` / `LDFLAGS`, exports `LD_LIBRARY_PATH`, and prepends `omnetpp-5.5.1/bin` to `PATH` for the current run
 
 Examples:
 
@@ -124,6 +132,13 @@ Examples:
 ```bash
 ./build_omnetpp_env.sh arm_cpu
 ```
+
+ARM mode behavior:
+- disables FastDXT (`-DOSGEARTH_ENABLE_FASTDXT=OFF`)
+- requests install into `/usr/local/lib`
+- if osgEarth still lands in `/usr/local/lib64`, auto-registers that path with `ldconfig`
+- runs OMNeT++ `./configure` with ARM-friendly include/library flags
+- exports `PATH` so OMNeT++ `make` does not stop at the `bin is not in the path` check
 
 ```bash
 OSGEARTH_TAG=osgearth-2.10 ./build_omnetpp_env.sh
@@ -296,4 +311,3 @@ If the OMNeT++ IDE window opens but mouse clicks, menus, or dialogs do not behav
 
 - **WSL / WSLg**: acceptable for install, configure, build, CLI work, and some fixed-time demo checks
 - **Ubuntu Desktop / native Linux GUI with proper 3D acceleration**: preferred for long-term OMNeT++ IDE usage and OSGEarth visualization
-

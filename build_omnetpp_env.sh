@@ -11,6 +11,8 @@ OSGEARTH_TAG="${OSGEARTH_TAG:-osgearth-2.10}"
 RESET_OSGEARTH_TREE="${RESET_OSGEARTH_TREE:-0}"
 OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS:-}"
 BUILD_PROFILE="${1:-default}"   # default | arm_cpu
+CONFIGURE_CPPFLAGS="${CONFIGURE_CPPFLAGS:-}"
+CONFIGURE_LDFLAGS="${CONFIGURE_LDFLAGS:-}"
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -52,8 +54,10 @@ case "$BUILD_PROFILE" in
   default|normal|x86|x86_64|"")
     ;;
   arm_cpu)
-    # osgEarth fastdxt uses x86/SSE intrinsics (emmintrin.h) and breaks on ARM.
-    OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS} -DOSGEARTH_ENABLE_FASTDXT=OFF"
+    # ARM/aarch64 cannot compile FastDXT because it uses x86/SSE intrinsics (emmintrin.h).
+    OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS} -DOSGEARTH_ENABLE_FASTDXT=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_INSTALL_LIBDIR=lib"
+    CONFIGURE_CPPFLAGS="${CONFIGURE_CPPFLAGS} -I/usr/local/include"
+    CONFIGURE_LDFLAGS="${CONFIGURE_LDFLAGS} -L/usr/local/lib -L/usr/local/lib64"
     ;;
   *)
     echo "Usage: $0 [default|arm_cpu]" >&2
@@ -97,6 +101,11 @@ cd "$OSGEARTH_DIR/build"
 cmake .. -DCMAKE_BUILD_TYPE=Release ${OSGEARTH_CMAKE_ARGS}
 make -j"$(nproc)"
 sudo make install
+
+# If the project still installed libraries to lib64, register that path for the linker.
+if find /usr/local/lib64 -maxdepth 1 \( -name 'libosgEarth.so' -o -name 'libosgEarthUtil.so' \) | grep -q .; then
+  echo '/usr/local/lib64' | sudo tee /etc/ld.so.conf.d/osgearth-local.conf >/dev/null
+fi
 sudo ldconfig
 
 JAVA_BIN_REAL="$(readlink -f /usr/bin/java || true)"
@@ -107,9 +116,21 @@ if [ -n "$JAVA_BIN_REAL" ]; then
 fi
 
 ensure_line "$HOME/.bashrc" "export PATH=$OMNETPP_DIR/bin:\$PATH"
+export PATH="$OMNETPP_DIR/bin:$PATH"
+
+if [ "$BUILD_PROFILE" = "arm_cpu" ]; then
+  export CPPFLAGS="${CONFIGURE_CPPFLAGS# }"
+  export LDFLAGS="${CONFIGURE_LDFLAGS# }"
+  export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
 
 cd "$OMNETPP_DIR"
-./configure
+if [ -n "${CPPFLAGS:-}" ] || [ -n "${LDFLAGS:-}" ]; then
+  CPPFLAGS="${CPPFLAGS:-}" LDFLAGS="${LDFLAGS:-}" ./configure
+else
+  ./configure
+fi
+
 set +u
 source setenv -f
 set -u
@@ -124,5 +145,8 @@ echo "osgEarth directory: $OSGEARTH_DIR"
 echo "osgEarth repo: $OSGEARTH_REPO"
 echo "osgEarth tag: $OSGEARTH_TAG"
 echo "osgEarth CMake args: ${OSGEARTH_CMAKE_ARGS:-<none>}"
+if [ "$BUILD_PROFILE" = "arm_cpu" ]; then
+  echo "CPPFLAGS: ${CPPFLAGS:-<none>}"
+  echo "LDFLAGS: ${LDFLAGS:-<none>}"
+fi
 echo "Open a new shell or run: source ~/.bashrc"
-
