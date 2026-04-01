@@ -10,6 +10,7 @@ OSGEARTH_REPO="${OSGEARTH_REPO:-https://github.com/gwaldron/osgearth.git}"
 OSGEARTH_TAG="${OSGEARTH_TAG:-osgearth-2.10}"
 RESET_OSGEARTH_TREE="${RESET_OSGEARTH_TREE:-0}"
 OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS:-}"
+BUILD_PROFILE="${1:-default}"   # default | arm_cpu
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -46,6 +47,19 @@ prepare_osgearth_repo() {
   git submodule sync --recursive
   git submodule update --init --recursive
 }
+
+case "$BUILD_PROFILE" in
+  default|normal|x86|x86_64|"")
+    ;;
+  arm_cpu)
+    # osgEarth fastdxt uses x86/SSE intrinsics (emmintrin.h) and breaks on ARM.
+    OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS} -DOSGEARTH_ENABLE_FASTDXT=OFF"
+    ;;
+  *)
+    echo "Usage: $0 [default|arm_cpu]" >&2
+    exit 1
+    ;;
+esac
 
 sudo apt update
 sudo apt install -y \
@@ -104,8 +118,11 @@ make -j"$(nproc)"
 echo
 
 echo "Build completed."
+echo "Build profile: $BUILD_PROFILE"
 echo "OMNeT++ directory: $OMNETPP_DIR"
 echo "osgEarth directory: $OSGEARTH_DIR"
 echo "osgEarth repo: $OSGEARTH_REPO"
 echo "osgEarth tag: $OSGEARTH_TAG"
+echo "osgEarth CMake args: ${OSGEARTH_CMAKE_ARGS:-<none>}"
 echo "Open a new shell or run: source ~/.bashrc"
+
