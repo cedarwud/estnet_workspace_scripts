@@ -50,6 +50,11 @@ chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh
 - Default osgEarth tag: `osgearth-2.10`
 - This package is written to use `2.10` by default.
 - Unless you specifically need an older tag, do not switch back to `2.7`.
+- On ARM64 / aarch64 machines, use the dedicated ARM CPU build mode to disable FastDXT:
+
+```bash
+./build_omnetpp_env.sh arm_cpu
+```
 
 ## Important practical note about time reference and 3D rendering
 
@@ -108,11 +113,16 @@ Optional variables:
 - `OSGEARTH_TAG`
 - `RESET_OSGEARTH_TREE`
 - `OSGEARTH_CMAKE_ARGS`
+- positional build mode: `default` or `arm_cpu`
 
 Examples:
 
 ```bash
 ./build_omnetpp_env.sh
+```
+
+```bash
+./build_omnetpp_env.sh arm_cpu
 ```
 
 ```bash
@@ -286,3 +296,4 @@ If the OMNeT++ IDE window opens but mouse clicks, menus, or dialogs do not behav
 
 - **WSL / WSLg**: acceptable for install, configure, build, CLI work, and some fixed-time demo checks
 - **Ubuntu Desktop / native Linux GUI with proper 3D acceleration**: preferred for long-term OMNeT++ IDE usage and OSGEarth visualization
+
