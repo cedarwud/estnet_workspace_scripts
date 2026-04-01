@@ -1,111 +1,53 @@
-[ 59%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileDrawable.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileDrawable.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/TileDrawable.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileDrawable.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileDrawable.cpp
-In file included from /usr/include/osg/State:33,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Containers:29,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/RenderBindings:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileRenderModel:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileDrawable:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileDrawable.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/EngineContext.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/EngineContext.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/EngineContext.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/EngineContext.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/EngineContext.cpp
-In file included from /usr/include/osg/State:33,
-                 from /usr/include/osg/GraphicsContext:17,
-                 from /usr/include/osg/Texture:20,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/ImageUtils:26,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/GeoData:27,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Profile:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/TileKey:24,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/MaskGenerator:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/GeometryPool:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/EngineContext:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/EngineContext.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNode.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNode.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNode.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNode.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNode.cpp
-In file included from /usr/include/osg/State:33,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Containers:29,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/RenderBindings:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNode:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNode.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNodeRegistry.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNodeRegistry.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNodeRegistry.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNodeRegistry.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNodeRegistry.cpp
-In file included from /usr/include/osg/State:33,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Containers:29,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/RenderBindings:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNode:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNodeRegistry:23,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/TileNodeRegistry.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/Loader.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/Loader.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/Loader.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/Loader.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Loader.cpp
-In file included from /usr/include/osg/State:33,
-                 from /usr/include/osg/GraphicsContext:17,
-                 from /usr/include/osg/Texture:20,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/ImageUtils:26,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/GeoData:27,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Profile:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/TileKey:24,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Loader:26,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Loader.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/Unloader.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/Unloader.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/Unloader.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/Unloader.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Unloader.cpp
-In file included from /usr/include/osg/State:33,
-                 from /usr/include/osg/GraphicsContext:17,
-                 from /usr/include/osg/Texture:20,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/ImageUtils:26,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/GeoData:27,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/Profile:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarth/TileKey:24,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Unloader:25,
-                 from /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/engine_rex/Unloader.cpp:19:
-/usr/include/osg/GraphicsCostEstimator: In member function ‘osg::CostPair osg::GraphicsCostEstimator::estimateCompileCost(const osg::Geometry*) const’:
-/usr/include/osg/GraphicsCostEstimator:118:71: note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1
-  118 |     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
-      |                                                                       ^
-[ 60%] Building CXX object src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/AutoGenShaders.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/c++ -Dosgdb_osgearth_engine_rex_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/engine_rex/CMakeFiles/osgdb_osgearth_engine_rex.dir/AutoGenShaders.cpp.o -MF CMakeFiles/osgdb_osgearth_engine_rex.dir/AutoGenShaders.cpp.o.d -o CMakeFiles/osgdb_osgearth_engine_rex.dir/AutoGenShaders.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex/AutoGenShaders.cpp
-[ 60%] Linking CXX shared module ../../../lib/osgdb_osgearth_engine_rex.so
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/engine_rex && /usr/bin/cmake -E cmake_link_script CMakeFiles/osgdb_osgearth_engine_rex.dir/link.txt --verbose=1
-/usr/bin/c++ -fPIC -O3 -DNDEBUG -shared  -o ../../../lib/osgdb_osgearth_engine_rex.so CMakeFiles/osgdb_osgearth_engine_rex.dir/DrawState.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/DrawTileCommand.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/GeometryPool.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/RexTerrainEngineNode.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/RexTerrainEngineDriver.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/LayerDrawable.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/LoadTileData.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/MaskGenerator.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/SelectionInfo.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/SurfaceNode.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/TerrainCuller.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/TerrainRenderData.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileDrawable.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/EngineContext.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNode.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/TileNodeRegistry.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/Loader.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/Unloader.cpp.o CMakeFiles/osgdb_osgearth_engine_rex.dir/AutoGenShaders.cpp.o   -L/home/user/estnet_workspace_scripts/osgearth/build/lib  -Wl,-rpath,/home/user/estnet_workspace_scripts/osgearth/build/lib: ../../../lib/libosgEarthUtil.so.2.9.0 ../../../lib/libosgEarthAnnotation.so.2.9.0 ../../../lib/libosgEarthFeatures.so.2.9.0 ../../../lib/libosgEarthSymbology.so.2.9.0 ../../../lib/libosgEarth.so.2.9.0 -losgShadow -lcurl -lgdal -losgManipulator -losgWidget -lm -losg -losgUtil -losgSim -losgTerrain -losgDB -losgFX -losgViewer -losgText -losgGA -lprotobuf -lOpenThreads -lGL -lGLU -lOpenThreads -lGL -lGLU 
-make[2]: 離開目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-[ 60%] Built target osgdb_osgearth_engine_rex
-make  -f src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/build.make src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/depend
-make[2]: 進入目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-cd /home/user/estnet_workspace_scripts/osgearth/build && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/user/estnet_workspace_scripts/osgearth /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/fastdxt /home/user/estnet_workspace_scripts/osgearth/build /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/DependInfo.cmake "--color="
-Dependencies file "src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/FastDXTImageProcessor.cpp.o.d" is newer than depends file "/home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/compiler_depend.internal".
-Dependencies file "src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/dxt.cpp.o.d" is newer than depends file "/home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/compiler_depend.internal".
-Dependencies file "src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/libdxt.cpp.o.d" is newer than depends file "/home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/compiler_depend.internal".
-Dependencies file "src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/util.cpp.o.d" is newer than depends file "/home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/compiler_depend.internal".
-Consolidate compiler generated dependencies of target osgdb_fastdxt
-make[2]: 離開目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-make  -f src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/build.make src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/build
-make[2]: 進入目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-[ 60%] Building CXX object src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/intrinsic.cpp.o
-cd /home/user/estnet_workspace_scripts/osgearth/build/src/osgEarthDrivers/fastdxt && /usr/bin/c++ -Dosgdb_fastdxt_EXPORTS -I/home/user/estnet_workspace_scripts/osgearth/src -O3 -DNDEBUG -fPIC -MD -MT src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/intrinsic.cpp.o -MF CMakeFiles/osgdb_fastdxt.dir/intrinsic.cpp.o.d -o CMakeFiles/osgdb_fastdxt.dir/intrinsic.cpp.o -c /home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/fastdxt/intrinsic.cpp
-/home/user/estnet_workspace_scripts/osgearth/src/osgEarthDrivers/fastdxt/intrinsic.cpp:42:10: fatal error: emmintrin.h: 沒有此一檔案或目錄
-   42 | #include <emmintrin.h>  // sse2
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/build.make:132：src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/intrinsic.cpp.o] 錯誤 1
-make[2]: 離開目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-make[1]: *** [CMakeFiles/Makefile2:2863：src/osgEarthDrivers/fastdxt/CMakeFiles/osgdb_fastdxt.dir/all] 錯誤 2
-make[1]: 離開目錄「/home/user/estnet_workspace_scripts/osgearth/build」
-make: *** [Makefile:156：all] 錯誤 2
+checking build system type... aarch64-unknown-linux-gnu
+checking host system type... aarch64-unknown-linux-gnu
+configure: -----------------------------------------------
+configure: reading configure.user for your custom settings
+configure: -----------------------------------------------
+checking for icc... no
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking for icpc... no
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking for g++... g++
+checking for ranlib... ranlib
+checking whether g++ supports -fno-stack-protector... yes
+checking whether g++ supports -Wl,--no-as-needed... yes
+checking whether g++ supports -Wl,--as-needed... yes
+checking for swapcontext... yes
+checking if shared libs need -fPIC... yes
+checking for dlopen with CFLAGS="" LIBS=""... yes
+checking if --export-dynamic linker option is supported/needed... both
+checking for flags needed to link with static libs containing simple modules... --whole-archive
+configure: NOTE: Use the following syntax when linking with static libraries
+configure: containing simple modules and other dynamically registered components:
+configure:    g++ ... -Wl,--whole-archive <libs> -Wl,--no-whole-archive ...
+checking whether linker supports -rpath... yes
+checking for bison... bison -y
+checking for flex... flex
+checking lex output file root... lex.yy
+checking lex library... none needed
+checking whether yytext is a pointer... no
+checking for make... make
+checking for perl... perl
+checking for swig... swig
+checking for math with CFLAGS="" LIBS=""... yes
+checking for standard C++ lib with CFLAGS="" LIBS="-lstdc++"... yes
+checking for dlopen with CFLAGS="" LIBS=""... yes
+checking for qmake... /usr/bin/qmake
+checking for moc... /usr/bin/moc
+checking for uic... /usr/bin/uic
+checking for rcc... /usr/bin/rcc
+checking for Qt5 with CFLAGS=" -std=c++11  -fPIC -isystem /usr/include/aarch64-linux-gnu/qt5 -isystem /usr/include/aarch64-linux-gnu/qt5/QtCore -isystem /usr/include/aarch64-linux-gnu/qt5/QtGui -isystem /usr/include/aarch64-linux-gnu/qt5/QtWidgets -isystem /usr/include/aarch64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/aarch64-linux-gnu/qt5/QtPrintSupport  -fPIC -isystem /usr/include/aarch64-linux-gnu/qt5 -isystem /usr/include/aarch64-linux-gnu/qt5/QtCore -isystem /usr/include/aarch64-linux-gnu/qt5/QtGui -isystem /usr/include/aarch64-linux-gnu/qt5/QtWidgets -isystem /usr/include/aarch64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/aarch64-linux-gnu/qt5/QtPrintSupport" LIBS="-lQt5Gui -lQt5Core -lQt5Widgets -lQt5PrintSupport -lQt5OpenGL -L/usr/lib/aarch64-linux-gnu -Wl,-rpath=/usr/lib/aarch64-linux-gnu"... yes
+checking for OpenSceneGraph with CFLAGS=" -fPIC  -fno-stack-protector  " LIBS=" -Wl,--export-dynamic  -losg -losgDB -losgGA -losgViewer -losgUtil -lOpenThreads"... yes
+checking for osgEarth with CFLAGS=" -fPIC  -fno-stack-protector  " LIBS=" -Wl,--export-dynamic  -losgEarth -losgEarthUtil"... no
+configure: error: Cannot find osgEarth 2.7 or later. Set WITH_OSGEARTH=no in configure.user to disable this feature or install an up to date version of osgEarth.
+
