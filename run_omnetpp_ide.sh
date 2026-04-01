@@ -6,6 +6,7 @@ ROOT_DIR="${ROOT_DIR:-$SCRIPT_DIR}"
 OMNETPP_DIR="${OMNETPP_DIR:-$ROOT_DIR/omnetpp-5.5.1}"
 INET_DIR="${INET_DIR:-$ROOT_DIR/inet}"
 OSGEARTH_DIR="${OSGEARTH_DIR:-$ROOT_DIR/osgearth}"
+FORCE_XCB="${FORCE_XCB:-0}"
 
 if [ ! -f "$OMNETPP_DIR/setenv" ]; then
   echo "ERROR: setenv not found: $OMNETPP_DIR/setenv" >&2
@@ -17,12 +18,23 @@ if [ -d "$OSGEARTH_DIR/build/lib" ]; then
   export LD_LIBRARY_PATH="$OSGEARTH_DIR/build/lib:${LD_LIBRARY_PATH:-}"
 fi
 
+# OpenSceneGraph looks up data files such as moon_1024x512.jpg via OSG_FILE_PATH.
+if [ -d "$OSGEARTH_DIR/data" ]; then
+  export OSG_FILE_PATH="$OSGEARTH_DIR/data${OSG_FILE_PATH:+:$OSG_FILE_PATH}"
+fi
+
+# Keep osgEarth data path available when present.
 if [ -d "$OSGEARTH_DIR/share/osgearth" ]; then
   export OSGEARTH_DATA_PATH="$OSGEARTH_DIR/share/osgearth"
 elif [ -d /usr/local/share/osgearth ]; then
   export OSGEARTH_DATA_PATH=/usr/local/share/osgearth
 elif [ -d /usr/share/osgearth ]; then
   export OSGEARTH_DATA_PATH=/usr/share/osgearth
+fi
+
+# Optional: force Qt to use xcb instead of Wayland when explicitly requested.
+if [ "$FORCE_XCB" = "1" ]; then
+  export QT_QPA_PLATFORM=xcb
 fi
 
 cd "$OMNETPP_DIR"

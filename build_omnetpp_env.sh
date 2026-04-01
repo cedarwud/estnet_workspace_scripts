@@ -56,7 +56,7 @@ sudo apt install -y \
   libxml2-dev zlib1g-dev libdw-dev \
   qt5-qmake qtchooser qtbase5-dev qtbase5-dev-tools \
   build-essential cmake libgdal-dev libglew-dev libgeos-dev \
-  libopenscenegraph-dev \
+  libopenscenegraph-dev mesa-utils \
   default-jdk libwebkit2gtk-4.1-0
 
 mkdir -p "$ROOT_DIR"

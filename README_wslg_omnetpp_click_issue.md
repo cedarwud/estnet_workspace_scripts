@@ -22,6 +22,27 @@ OMNeT++ IDE 本身是 **Eclipse-based IDE**，而不是單純的輕量 Linux GUI
 
 ---
 
+## 補充：WSL 中 Earth model 是否可顯示
+實務上要分清楚兩件事：
+
+1. **IDE 是否能互動**
+2. **OSGEarth 場景是否能正常渲染**
+
+WSL / WSLg 有時候可以做到：
+- IDE 能開
+- 在 `fixed` time-reference 模式下，Earth model 可以基本顯示
+
+但這**不代表** WSL 已經適合正式的 TLE-driven 3D 視覺化。沒有足夠的硬體加速時，`tle` 模式仍可能出現：
+- 地球透明或發白
+- 光照/渲染異常
+- 視窗卡住或沒有回應
+
+所以：
+- **`fixed` 在 WSL 能顯示** → 可以當作 debug/demo 的正面訊號
+- **`tle` 在 WSL 仍不穩** → 不代表安裝失敗，更可能是 3D acceleration 限制
+
+---
+
 ## 為什麼會發生
 OMNeT++ IDE 依賴以下幾層：
 
@@ -29,19 +50,21 @@ OMNeT++ IDE 依賴以下幾層：
 2. **Eclipse / SWT GUI framework**
 3. **Qt 與其他圖形相依**
 4. **WSLg 將 Linux GUI 顯示到 Windows 桌面**
+5. **OpenGL / Mesa / GPU acceleration**
 
-其中前 3 層即使都正常，WSLg 仍可能出現：
+其中前 4 層即使都正常，第 5 層仍可能造成：
 
 - 視窗能顯示，但焦點異常
 - 視窗內容更新正常，但按鈕無法點擊
 - popup / dialog 沒反應
 - 選單打不開或游標事件異常
+- Earth model 在 `fixed` 可看，但在 `tle` 下渲染異常
 
 因此，**「能開啟」不代表「適合當主 IDE 環境」**。
 
 ---
 
-## 如何確認是不是 WSLg 問題
+## 如何確認是不是 WSLg / 3D acceleration 問題
 可以用以下方式快速判斷。
 
 ### 1. 先確認 OMNeT++ 本體是否已正確建置
@@ -59,9 +82,28 @@ OMNeT++ IDE 依賴以下幾層：
 ./run_omnetpp_ide.sh
 ```
 
+或必要時：
+
+```bash
+FORCE_XCB=1 ./run_omnetpp_ide.sh
+```
+
 這樣可以一起帶入 OMNeT++、INET 與 osgEarth 相關環境變數。
 
-### 3. 測試其他 Linux GUI app
+### 3. 檢查 OpenGL renderer
+執行：
+
+```bash
+glxinfo -B
+```
+
+如果看到：
+- `OpenGL renderer string: llvmpipe`
+- `Accelerated: no`
+
+那代表目前是 **software-rendered OpenGL**。在這種情況下，OSGEarth 的 `tle` 場景很可能不穩，即使 `fixed` 還能勉強顯示。
+
+### 4. 測試其他 Linux GUI app
 在同一個 WSL 環境中測試其他 GUI 程式，例如：
 
 ```bash
@@ -98,11 +140,7 @@ wsl --shutdown
 ./run_omnetpp_ide.sh
 ```
 
-這個方法適合處理 WSLg 本身的版本問題、暫時性 GUI 狀態異常、睡眠喚醒後的視窗失效等情況。
-
-### 方案 B：不要把 WSL 當主 IDE 環境
-這是最建議的做法。
-
+### 方案 B：將 WSL 視為 build / debug 環境
 建議分工如下：
 
 - **WSL**：
@@ -110,16 +148,14 @@ wsl --shutdown
   - `./configure`
   - `make`
   - 測試 CLI 工作流
+  - 測試 `fixed` 模式是否能顯示 Earth model
 
-- **Ubuntu Desktop VM / 原生 Linux GUI 環境**：
+- **Ubuntu Desktop / 原生 Linux GUI + proper 3D acceleration**：
   - 啟動 `omnetpp` IDE
   - 匯入 workspace
   - 執行 GUI 互動
+  - 跑 `tle` 正式模式
   - 後續 UI / demo / 視覺化開發
-
-這樣的原因很簡單：
-
-WSL 很適合做 **建置與命令列工作**，但不一定適合承擔 **Eclipse 型 GUI IDE 的穩定互動**。
 
 ### 方案 C：只在 WSL 使用命令列流程
 如果暫時不需要 IDE，可先只用命令列：
@@ -151,8 +187,14 @@ make -j"$(nproc)"
 
 這時候 GUI 無法點擊，通常不是重新安裝一遍就能自然解決。
 
-### 不建議 2：一直在 WSL 內反覆重裝 Qt / Java / OSG 套件
-若前面已成功 `configure` 並進入 IDE，反覆重裝這些元件通常不是關鍵。
+### 不建議 2：把 `fixed` 能顯示誤判成 `tle` 一定沒問題
+`fixed` 和 `tle` 對場景渲染壓力與時間參考不同。
+
+`fixed` 可正常顯示，只能代表：
+- 腳本、資料路徑、基本場景建立大致可行
+
+它**不能直接保證**：
+- `tle` 模式在無 GPU acceleration 的環境中也一定穩定
 
 ### 不建議 3：在 WSL 上硬做所有 IDE 與展示工作
 如果你的專案後續包含：
@@ -162,29 +204,9 @@ make -j"$(nproc)"
 - GUI 操作
 - 視覺化 demo
 - 互動式 UI 測試
+- 正式 `tle` 模式展示
 
 那就不應該把 WSL 當最終主開發環境。
-
----
-
-## 建議的實務流程
-
-### 最穩定流程
-1. 在 WSL 完成安裝與編譯
-2. 確認 `./configure` 與 `make` 正常
-3. 若 `omnetpp` 在 WSLg 下可開但無法互動，停止在 WSL 做 IDE 操作
-4. 改到 Ubuntu Desktop VM 或原生 Linux GUI 環境開 IDE
-5. 之後再匯入 INET / estnet / estnet-template
-
-### 簡化判斷
-如果你遇到的是：
-
-- **能開，但不能點**
-
-那通常不是「重新安裝 OMNeT++」的問題，而是：
-
-- **WSLg GUI 層問題**
-- 或 **WSLg + Eclipse/SWT 相容性問題**
 
 ---
 
@@ -192,11 +214,9 @@ make -j"$(nproc)"
 
 對這個專案而言：
 
-- **WSL 適合安裝、configure、make**
-- **Ubuntu Desktop 更適合啟動 OMNeT++ IDE 並做後續 GUI 工作**
+- **WSL 適合安裝、configure、make、CLI、fixed 模式 debug/demo**
+- **Ubuntu Desktop / 原生 Linux GUI + proper 3D acceleration 更適合正式的 tle 模式與後續 GUI 工作**
 
-如果 WSL 中 `omnetpp` 視窗可見但無法點擊，建議直接採取：
+如果 WSL 中 `omnetpp` 視窗可見但無法點擊，或 `tle` 模式渲染異常，建議直接採取：
 
-**「WSL 做 build，Ubuntu Desktop 做 IDE」**
-
-這是目前最省時間、最穩定的處理方式。
+**「WSL 做 build / fixed debug，Linux GUI + 3D acceleration 做 tle 正式展示」**

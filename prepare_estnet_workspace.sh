@@ -71,8 +71,10 @@ Recorded exact commits in:
   - $VERSION_LOCK_FILE
 
 Next step:
-  1. Run ./run_omnetpp_ide.sh
-  2. In OMNeT++ IDE, import these existing projects into the workspace:
+  1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
+  2. Or run ./set_estnet_time_ref.sh fixed  # debug/demo mode
+  3. Run ./run_omnetpp_ide.sh
+  4. In OMNeT++ IDE, import these existing projects into the workspace:
      - inet
      - estnet
      - estnet-template
