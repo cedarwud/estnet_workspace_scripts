@@ -1,8 +1,6 @@
-user@spark-6a72:~/estnet_workspace_scripts$ echo 'int main(){return 0;}' | g++ -x c++ - -losgEarth -losgEarthUtil -o /tmp/test_osgearth
-user@spark-6a72:~/estnet_workspace_scripts$ echo 'int main(){return 0;}' | g++ -x c++ - -losgEarth -losgEarthUtil -o /tmp/test_osgearth
-user@spark-6a72:~/estnet_workspace_scripts$ echo 'int main(){return 0;}' | g++ -x c++ - -losgEarth -losgEarthUtil -o /tmp/test_osgearth
-user@spark-6a72:~/estnet_workspace_scripts$ cd omnetpp-5.5.1/
-user@spark-6a72:~/estnet_workspace_scripts/omnetpp-5.5.1$ ./configure 
+user@spark-6a72:~/estnet_workspace_scripts$ echo 'int main(){return 0;}' | g++ -x c++ - -I/usr/local/include -L/usr/local/lib64 -losgEarth -losgEarthUtil -o /tmp/test_osgearth
+user@spark-6a72:~/estnet_workspace_scripts$ cd ~/estnet_workspace_scripts/omnetpp-5.5.1
+CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib64" ./configure
 checking build system type... aarch64-unknown-linux-gnu
 checking host system type... aarch64-unknown-linux-gnu
 configure: -----------------------------------------------
@@ -58,7 +56,7 @@ checking for java... java
 checking for JNI with CFLAGS=" -fPIC -fno-strict-aliasing -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux"... yes
 checking for mpic++... not found
 checking for mpicxx... not found
-checking for MPI with CFLAGS=" -fPIC " LIBS=" -Wl,-rpath,$(OMNETPP_LIB_DIR) -Wl,-rpath,$(OMNETPP_TOOLS_DIR)/lib -Wl,-rpath,. -lmpi"... no
+checking for MPI with CFLAGS=" -fPIC " LIBS="-L/usr/local/lib64 -Wl,-rpath,$(OMNETPP_LIB_DIR) -Wl,-rpath,$(OMNETPP_TOOLS_DIR)/lib -Wl,-rpath,. -lmpi"... no
 configure: WARNING: Optional package MPI (needed for parallel simulation) not found.
 checking for PTHREAD with CFLAGS=" -fPIC " LIBS="-lpthread"... yes
 checking for LibXML XML parser with CFLAGS=" -fPIC " LIBS="-lxml2"... no
