@@ -52,7 +52,16 @@ OMNeT++ IDE 依賴以下幾層：
 - `make` 已成功
 - `omnetpp` 指令可以正常啟動 IDE
 
-### 2. 測試其他 Linux GUI app
+### 2. 建議用腳本啟動
+優先使用：
+
+```bash
+./run_omnetpp_ide.sh
+```
+
+這樣可以一起帶入 OMNeT++、INET 與 osgEarth 相關環境變數。
+
+### 3. 測試其他 Linux GUI app
 在同一個 WSL 環境中測試其他 GUI 程式，例如：
 
 ```bash
@@ -86,9 +95,7 @@ wsl --shutdown
 然後重新開啟 Ubuntu，再啟動 OMNeT++：
 
 ```bash
-cd ~/omnetpp-5.5.1
-source setenv
-omnetpp
+./run_omnetpp_ide.sh
 ```
 
 這個方法適合處理 WSLg 本身的版本問題、暫時性 GUI 狀態異常、睡眠喚醒後的視窗失效等情況。

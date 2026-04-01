@@ -3,12 +3,49 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${ROOT_DIR:-$SCRIPT_DIR}"
-OMNETPP_VERSION="5.5.1"
+OMNETPP_VERSION="${OMNETPP_VERSION:-5.5.1}"
 OMNETPP_DIR="${OMNETPP_DIR:-$ROOT_DIR/omnetpp-$OMNETPP_VERSION}"
 OSGEARTH_DIR="${OSGEARTH_DIR:-$ROOT_DIR/osgearth}"
+OSGEARTH_REPO="${OSGEARTH_REPO:-https://github.com/gwaldron/osgearth.git}"
 OSGEARTH_TAG="${OSGEARTH_TAG:-osgearth-2.10}"
+RESET_OSGEARTH_TREE="${RESET_OSGEARTH_TREE:-0}"
+OSGEARTH_CMAKE_ARGS="${OSGEARTH_CMAKE_ARGS:-}"
 
 export DEBIAN_FRONTEND=noninteractive
+
+ensure_line() {
+  local file="$1"
+  local line="$2"
+  touch "$file"
+  grep -qxF "$line" "$file" || printf '%s\n' "$line" >> "$file"
+}
+
+prepare_osgearth_repo() {
+  if [ ! -d "$OSGEARTH_DIR/.git" ]; then
+    git clone --recurse-submodules "$OSGEARTH_REPO" "$OSGEARTH_DIR"
+  fi
+
+  cd "$OSGEARTH_DIR"
+  git fetch --tags
+
+  if [ "$RESET_OSGEARTH_TREE" = "1" ]; then
+    git reset --hard
+    git clean -fd
+  elif [ -n "$(git status --porcelain)" ]; then
+    echo "ERROR: osgEarth working tree is dirty: $OSGEARTH_DIR" >&2
+    echo "       Commit/stash changes first, or rerun with RESET_OSGEARTH_TREE=1" >&2
+    git status --short >&2 || true
+    exit 2
+  fi
+
+  CURRENT_REF="$(git describe --tags --exact-match 2>/dev/null || true)"
+  if [ "$CURRENT_REF" != "$OSGEARTH_TAG" ]; then
+    git checkout -f "$OSGEARTH_TAG"
+  fi
+
+  git submodule sync --recursive
+  git submodule update --init --recursive
+}
 
 sudo apt update
 sudo apt install -y \
@@ -32,31 +69,18 @@ if [ ! -d "$OMNETPP_DIR" ]; then
 fi
 
 cd "$OMNETPP_DIR"
-if ! grep -q '^PREFER_CLANG=no$' configure.user 2>/dev/null; then
-cat >> configure.user <<'EOCFG'
-
-PREFER_CLANG=no
-PREFER_LLD=no
-WITH_OSG=yes
-WITH_OSGEARTH=yes
-EOCFG
-fi
+ensure_line configure.user "PREFER_CLANG=no"
+ensure_line configure.user "PREFER_LLD=no"
+ensure_line configure.user "WITH_OSG=yes"
+ensure_line configure.user "WITH_OSGEARTH=yes"
 
 cd "$ROOT_DIR"
-if [ ! -d "$OSGEARTH_DIR/.git" ]; then
-  git clone --recurse-submodules https://github.com/gwaldron/osgearth.git "$OSGEARTH_DIR"
-fi
-cd "$OSGEARTH_DIR"
-git fetch --tags
-CURRENT_TAG="$(git describe --tags --exact-match 2>/dev/null || true)"
-if [ "$CURRENT_TAG" != "$OSGEARTH_TAG" ]; then
-  git checkout "$OSGEARTH_TAG"
-fi
+prepare_osgearth_repo
 
-rm -rf build
-mkdir -p build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+rm -rf "$OSGEARTH_DIR/build"
+mkdir -p "$OSGEARTH_DIR/build"
+cd "$OSGEARTH_DIR/build"
+cmake .. -DCMAKE_BUILD_TYPE=Release ${OSGEARTH_CMAKE_ARGS}
 make -j"$(nproc)"
 sudo make install
 sudo ldconfig
@@ -64,11 +88,11 @@ sudo ldconfig
 JAVA_BIN_REAL="$(readlink -f /usr/bin/java || true)"
 if [ -n "$JAVA_BIN_REAL" ]; then
   JAVA_HOME_DIR="${JAVA_BIN_REAL%/bin/java}"
-  grep -qxF "export JAVA_HOME=$JAVA_HOME_DIR" "$HOME/.bashrc" || echo "export JAVA_HOME=$JAVA_HOME_DIR" >> "$HOME/.bashrc"
-  grep -qxF 'export PATH=$JAVA_HOME/bin:$PATH' "$HOME/.bashrc" || echo 'export PATH=$JAVA_HOME/bin:$PATH' >> "$HOME/.bashrc"
+  ensure_line "$HOME/.bashrc" "export JAVA_HOME=$JAVA_HOME_DIR"
+  ensure_line "$HOME/.bashrc" 'export PATH=$JAVA_HOME/bin:$PATH'
 fi
 
-grep -qxF "export PATH=$OMNETPP_DIR/bin:\$PATH" "$HOME/.bashrc" || echo "export PATH=$OMNETPP_DIR/bin:\$PATH" >> "$HOME/.bashrc"
+ensure_line "$HOME/.bashrc" "export PATH=$OMNETPP_DIR/bin:\$PATH"
 
 cd "$OMNETPP_DIR"
 ./configure
@@ -82,4 +106,6 @@ echo
 echo "Build completed."
 echo "OMNeT++ directory: $OMNETPP_DIR"
 echo "osgEarth directory: $OSGEARTH_DIR"
+echo "osgEarth repo: $OSGEARTH_REPO"
+echo "osgEarth tag: $OSGEARTH_TAG"
 echo "Open a new shell or run: source ~/.bashrc"

@@ -8,8 +8,9 @@ SIM_DIR="${SIM_DIR:-$ESTNET_TEMPLATE_DIR/simulations}"
 OMNETPP_INI="${OMNETPP_INI:-$SIM_DIR/omnetpp.ini}"
 
 TLE_FILE="${TLE_FILE:-./configs/tles/UWE3.tle}"
-SIMULATION_START="${SIMULATION_START:-2020-03-11T10:58:00.00+01:00Z}"
+SIMULATION_START="${SIMULATION_START:-2020-03-11T09:58:00Z}"
 FORCE_UPDATE="${FORCE_UPDATE:-0}"
+CREATE_BACKUP="${CREATE_BACKUP:-1}"
 
 if [ ! -f "$OMNETPP_INI" ]; then
   echo "ERROR: omnetpp.ini not found: $OMNETPP_INI" >&2
@@ -48,6 +49,10 @@ if [ "$FORCE_UPDATE" != "1" ]; then
     echo "No changes made."
     exit 0
   fi
+fi
+
+if [ "$CREATE_BACKUP" = "1" ]; then
+  cp "$OMNETPP_INI" "$OMNETPP_INI.bak"
 fi
 
 remove_time_ref_lines
