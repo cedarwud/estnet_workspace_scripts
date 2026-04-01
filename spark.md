@@ -1,6 +1,7 @@
-user@spark-6a72:~/estnet_workspace_scripts/omnetpp-5.5.1$ export CPPFLAGS="-I/usr/local/include"
+user@spark-6a72:~/estnet_workspace_scripts$ export CPPFLAGS="-I/usr/local/include"
 export LDFLAGS="-L/usr/local/lib64"
 export LD_LIBRARY_PATH="/usr/local/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
 cd ~/estnet_workspace_scripts/omnetpp-5.5.1
 make -j"$(nproc)"
 make -s MODE=release
