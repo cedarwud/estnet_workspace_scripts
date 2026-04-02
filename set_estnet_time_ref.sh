@@ -55,11 +55,13 @@ case "$MODE" in
     printf '*.globalJulianDate.tleFile = "%s"\n' "$TLE_FILE" >> "$OMNETPP_INI"
     echo "Configured TLE-based time reference:"
     echo "  *.globalJulianDate.tleFile = \"$TLE_FILE\""
+    echo "Hint: tle is the formal mode. On WSL/WSLg it may still render poorly even when fixed works."
     ;;
   fixed)
     printf '*.globalJulianDate.simulationStart = "%s"\n' "$SIMULATION_START" >> "$OMNETPP_INI"
     echo "Configured fixed simulationStart:"
     echo "  *.globalJulianDate.simulationStart = \"$SIMULATION_START\""
+    echo "Hint: fixed is useful for debug/demo and platform triage when 3D rendering is uncertain."
     ;;
   *)
     echo "Usage: $0 [tle|fixed]" >&2

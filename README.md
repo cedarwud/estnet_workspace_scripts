@@ -1,6 +1,6 @@
 # OMNeT++ 5.5.1 + ESTNeT Workspace Scripts
 
-This package contains four scripts and two README files for a Linux or WSL-based setup:
+This package contains four scripts and three documentation files for Linux, WSL/WSLg, VMware, and ARM/remote setups:
 
 - `build_omnetpp_env.sh`
 - `prepare_estnet_workspace.sh`
@@ -8,6 +8,7 @@ This package contains four scripts and two README files for a Linux or WSL-based
 - `run_omnetpp_ide.sh`
 - `README.md`
 - `README_wslg_omnetpp_click_issue.md`
+- `PLATFORM_TEST_RESULTS_20260402.md`
 
 ## Expected directory layout
 
@@ -20,7 +21,8 @@ Place the scripts in the same project root directory, for example:
 ├── set_estnet_time_ref.sh
 ├── run_omnetpp_ide.sh
 ├── README.md
-└── README_wslg_omnetpp_click_issue.md
+├── README_wslg_omnetpp_click_issue.md
+└── PLATFORM_TEST_RESULTS_20260402.md
 ```
 
 After running the build and prepare scripts, the directory will typically look like this:
@@ -41,12 +43,28 @@ After running the build and prepare scripts, the directory will typically look l
 chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh run_omnetpp_ide.sh
 ./build_omnetpp_env.sh
 ./prepare_estnet_workspace.sh
-# ARM CPU host that cannot rely on IDE build workflow:
-# ./prepare_estnet_workspace.sh arm_cpu
-./set_estnet_time_ref.sh
-./run_omnetpp_ide.sh
-# ARM CPU host runtime path:
-# ./run_omnetpp_ide.sh arm_cpu
+./set_estnet_time_ref.sh            # default = tle
+./run_omnetpp_ide.sh                # launches the OMNeT++ IDE
+```
+
+### Direct runtime examples
+
+When you want to skip the IDE and run ESTNeT directly:
+
+```bash
+./run_omnetpp_ide.sh direct Qtenv
+```
+
+```bash
+./run_omnetpp_ide.sh direct Cmdenv
+```
+
+ARM/remote host example:
+
+```bash
+./prepare_estnet_workspace.sh arm_cpu
+./set_estnet_time_ref.sh fixed
+./run_omnetpp_ide.sh arm_cpu Cmdenv
 ```
 
 ## Practical version choice
@@ -67,18 +85,17 @@ There are two supported time-reference modes:
 2. **fixed mode**
    - debug / demo mode
    - useful when you only want a stable scene and a predictable starting viewpoint/time
-   - in environments without proper 3D acceleration, `fixed` may render more reliably than `tle`
+   - useful as a first platform-triage step when native 3D rendering is uncertain
 
-Observed practical limitation:
-- `fixed` can still be usable in WSL / WSLg for basic Earth-model display.
-- `tle` may fail to render correctly in environments without hardware-accelerated OpenGL, such as:
-  - WSL / WSLg without proper GPU acceleration
-  - Ubuntu Desktop running in a VM with `llvmpipe`
-  - VirtualBox / software-rendered OpenGL environments
+Observed practical policy from the current test results:
+- **Native Ubuntu 24.04.3 + Ubuntu Wayland**: currently the best validated desktop path for ESTNeT 3D rendering (`fixed` and `tle` both usable).
+- **Native Ubuntu 24.04.3 + GNOME/Xorg**: currently problematic for embedded osgEarth rendering.
+- **Native Ubuntu 24.04.3 + XFCE/Xubuntu on Xorg**: earth can appear and be manipulated, but flicker remains.
+- **WSL / WSLg**: `fixed` can be usable, but `tle` earth rendering is not reliable enough to treat as a final presentation environment.
+- **VMware Ubuntu Desktop 24.04**: usable as a fallback/comparison path, but background artifacts may appear.
+- **ARM/remote hosts**: use direct runtime / CLI-first workflow and do not rely on the IDE.
 
-So the recommended policy is:
-- use **`tle`** as the default / formal mode
-- use **`fixed`** only when you need a more stable debug or demo view
+Read `PLATFORM_TEST_RESULTS_20260402.md` for the full validated matrix.
 
 ## Script purpose
 
@@ -235,7 +252,7 @@ TLE_FILE=./configs/tles/UWE3.tle ./set_estnet_time_ref.sh tle
 ```
 
 ### 4. `run_omnetpp_ide.sh`
-This script now supports two profiles.
+This script supports three profiles.
 
 Common behavior:
 - sources OMNeT++ `setenv`
@@ -243,52 +260,55 @@ Common behavior:
 - exports `OSG_FILE_PATH` from `$OSGEARTH_DIR/data` so OSG can find data files such as `moon_1024x512.jpg`
 - keeps `OSGEARTH_DATA_PATH` available when present
 - prepends local osgEarth build libs to `LD_LIBRARY_PATH` when available
-- also keeps `/usr/local/lib` and `/usr/local/lib64` visible for ARM builds
-- optionally forces `QT_QPA_PLATFORM=xcb` if `FORCE_XCB=1`
+- keeps `/usr/local/lib` and `/usr/local/lib64` visible when needed
+- optionally forces `QT_QPA_PLATFORM=xcb` with `FORCE_XCB=1`
+- optionally forces `QT_QPA_PLATFORM=wayland` with `FORCE_WAYLAND=1`
+- prints the current runtime/session environment by default (`PRINT_RUNTIME_INFO=1`)
 
-Default profile:
+Profiles:
+
+#### `default`
 - launches the OMNeT++ Eclipse IDE launcher (`bin/omnetpp`)
-
-Run it with:
 
 ```bash
 ./run_omnetpp_ide.sh
 ```
 
-ARM CPU profile:
-- skips the OMNeT++ IDE launcher
-- directly starts ESTNET through `opp_run`
-- intended for hosts where OMNeT++ core/runtime builds succeed but the Eclipse IDE launcher is unreliable
-- default UI in this mode is `Qtenv`
-
-Run it with:
+#### `direct`
+- skips the IDE
+- starts ESTNeT directly with either the built `estnet-template` executable or `opp_run`
+- supports both `Qtenv` and `Cmdenv`
+- corrected to include `../src` in the default NED path
+- corrected to load `ESTNeT` and `INET` shared libraries when present
 
 ```bash
-./run_omnetpp_ide.sh arm_cpu
+./run_omnetpp_ide.sh direct Qtenv
 ```
 
-ARM CPU + Cmdenv example:
+```bash
+./run_omnetpp_ide.sh direct Cmdenv
+```
+
+#### `arm_cpu`
+- same direct runtime logic as `direct`
+- intended for ARM/remote hosts where the Eclipse IDE is not practical
 
 ```bash
 ./run_omnetpp_ide.sh arm_cpu Cmdenv
 ```
 
-Optional variables:
-- `ROOT_DIR`
-- `OMNETPP_DIR`
-- `INET_DIR`
-- `ESTNET_DIR`
-- `ESTNET_TEMPLATE_DIR`
-- `OSGEARTH_DIR`
-- `FORCE_XCB`
-- `SIM_DIR`
-- `OMNETPP_INI`
-- `NED_PATH`
-
-Useful example:
+Useful examples:
 
 ```bash
 FORCE_XCB=1 ./run_omnetpp_ide.sh
+```
+
+```bash
+FORCE_WAYLAND=1 ./run_omnetpp_ide.sh
+```
+
+```bash
+PRINT_RUNTIME_INFO=0 ./run_omnetpp_ide.sh direct Qtenv
 ```
 
 ## First-time IDE steps
@@ -318,13 +338,9 @@ If you see:
 
 then the environment is software-rendered and OSGEarth visualization may be unreliable even if OMNeT++ and ESTNeT themselves are installed correctly.
 
-## WSL / WSLg note
+## Additional notes
 
-If the OMNeT++ IDE window opens but mouse clicks, menus, or dialogs do not behave correctly, see:
-
-- `README_wslg_omnetpp_click_issue.md`
-
-## Practical recommendation
-
-- **WSL / WSLg**: acceptable for install, configure, build, CLI work, and some fixed-time demo checks
-- **Ubuntu Desktop / native Linux GUI with proper 3D acceleration**: preferred for long-term OMNeT++ IDE usage and OSGEarth visualization
+- WSL / WSLg click/focus issues are documented in `README_wslg_omnetpp_click_issue.md`.
+- The consolidated platform validation record is in `PLATFORM_TEST_RESULTS_20260402.md`.
+- For native Ubuntu 24.04.3 desktop use, validate your current session type before blaming the project. Current testing shows that the session/compositor can change the result materially.
+- The old standalone Spark note has been merged into `PLATFORM_TEST_RESULTS_20260402.md` and is no longer shipped as a separate file.

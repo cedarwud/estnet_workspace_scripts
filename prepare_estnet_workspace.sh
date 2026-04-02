@@ -142,20 +142,25 @@ ARM CPU mode completed:
   - built INET, ESTNET, and ESTNET-TEMPLATE (with python shim when needed)
 
 Recommended next step:
-  1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
-  2. Or run ./set_estnet_time_ref.sh fixed  # debug/demo mode
-  3. Start simulation with opp_run or Qtenv from estnet-template/simulations
+  1. Run ./set_estnet_time_ref.sh fixed     # debug/demo mode is usually the safer first check
+  2. Start simulation with ./run_omnetpp_ide.sh arm_cpu Cmdenv
+  3. Read PLATFORM_TEST_RESULTS_20260402.md for the Spark/ARM role split
 EOM
 else
   cat <<EOM
 
 Next step:
-  1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
-  2. Or run ./set_estnet_time_ref.sh fixed  # debug/demo mode
-  3. Run ./run_omnetpp_ide.sh
-  4. In OMNeT++ IDE, import these existing projects into the workspace:
+  1. Run ./set_estnet_time_ref.sh            # default = tle (formal mode)
+  2. Or run ./set_estnet_time_ref.sh fixed   # useful as a first rendering triage step
+  3. Run ./run_omnetpp_ide.sh                # launches the IDE
+  4. Or skip the IDE with ./run_omnetpp_ide.sh direct Qtenv
+  5. In OMNeT++ IDE, import these existing projects into the workspace:
      - inet
      - estnet
      - estnet-template
+
+Platform hint:
+  - Native Ubuntu 24.04 desktop: Wayland is currently the best-validated 3D path.
+  - WSL/WSLg: fixed is the safer first check; do not assume tle will render cleanly.
 EOM
 fi

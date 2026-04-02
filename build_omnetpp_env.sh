@@ -137,7 +137,6 @@ set -u
 make -j"$(nproc)"
 
 echo
-
 echo "Build completed."
 echo "Build profile: $BUILD_PROFILE"
 echo "OMNeT++ directory: $OMNETPP_DIR"
@@ -150,3 +149,7 @@ if [ "$BUILD_PROFILE" = "arm_cpu" ]; then
   echo "LDFLAGS: ${LDFLAGS:-<none>}"
 fi
 echo "Open a new shell or run: source ~/.bashrc"
+echo
+echo "Post-build hint:"
+echo "  - Check the renderer with: glxinfo -B"
+echo "  - If ESTNeT 3D rendering differs by desktop/session, read PLATFORM_TEST_RESULTS_20260402.md"
