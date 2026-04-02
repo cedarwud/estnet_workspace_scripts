@@ -11,6 +11,8 @@ INET_TAG="${INET_TAG:-v4.2.0}"
 ESTNET_REF="${ESTNET_REF:-}"
 ESTNET_TEMPLATE_REF="${ESTNET_TEMPLATE_REF:-}"
 VERSION_LOCK_FILE="${VERSION_LOCK_FILE:-$ROOT_DIR/workspace_versions.lock}"
+PREPARE_PROFILE="${1:-default}"   # default | arm_cpu
+BUILD_JOBS="${BUILD_JOBS:-$(nproc)}"
 
 checkout_ref_if_requested() {
   local repo_dir="$1"
@@ -27,19 +29,33 @@ record_version() {
   printf '%s=%s\n' "$name" "$(git -C "$repo_dir" rev-parse HEAD)" >> "$VERSION_LOCK_FILE"
 }
 
+ensure_repo() {
+  local dir="$1"
+  local clone_cmd="$2"
+  if [ ! -d "$dir/.git" ]; then
+    eval "$clone_cmd"
+  fi
+}
+
+build_project() {
+  local project_dir="$1"
+  local label="$2"
+
+  echo "===== Building $label ====="
+  cd "$project_dir"
+
+  if [ ! -f Makefile ]; then
+    make makefiles
+  fi
+
+  make -j"$BUILD_JOBS"
+}
+
 mkdir -p "$ROOT_DIR"
 
-if [ ! -d "$INET_DIR/.git" ]; then
-  git clone --branch "$INET_TAG" --depth 1 https://github.com/inet-framework/inet.git "$INET_DIR"
-fi
-
-if [ ! -d "$ESTNET_DIR/.git" ]; then
-  git clone https://github.com/estnet-framework/estnet.git "$ESTNET_DIR"
-fi
-
-if [ ! -d "$ESTNET_TEMPLATE_DIR/.git" ]; then
-  git clone https://github.com/estnet-framework/estnet-template.git "$ESTNET_TEMPLATE_DIR"
-fi
+ensure_repo "$INET_DIR" "git clone --branch '$INET_TAG' --depth 1 https://github.com/inet-framework/inet.git '$INET_DIR'"
+ensure_repo "$ESTNET_DIR" "git clone https://github.com/estnet-framework/estnet.git '$ESTNET_DIR'"
+ensure_repo "$ESTNET_TEMPLATE_DIR" "git clone https://github.com/estnet-framework/estnet-template.git '$ESTNET_TEMPLATE_DIR'"
 
 checkout_ref_if_requested "$ESTNET_DIR" "$ESTNET_REF"
 checkout_ref_if_requested "$ESTNET_TEMPLATE_DIR" "$ESTNET_TEMPLATE_REF"
@@ -59,8 +75,38 @@ record_version INET "$INET_DIR"
 record_version ESTNET "$ESTNET_DIR"
 record_version ESTNET_TEMPLATE "$ESTNET_TEMPLATE_DIR"
 
+case "$PREPARE_PROFILE" in
+  default|normal|x86|x86_64|"")
+    ;;
+  arm_cpu)
+    export PATH="$OMNETPP_DIR/bin:$PATH"
+    export CPPFLAGS="-I/usr/local/include${CPPFLAGS:+ $CPPFLAGS}"
+    export LDFLAGS="-L/usr/local/lib -L/usr/local/lib64${LDFLAGS:+ $LDFLAGS}"
+    export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+    cd "$OMNETPP_DIR"
+    set +u
+    source "$OMNETPP_DIR/setenv" -f
+    set -u
+
+    cd "$INET_DIR"
+    set +u
+    source "$INET_DIR/setenv" -f
+    set -u
+
+    build_project "$INET_DIR" "INET"
+    build_project "$ESTNET_DIR" "ESTNET"
+    build_project "$ESTNET_TEMPLATE_DIR" "ESTNET-TEMPLATE"
+    ;;
+  *)
+    echo "Usage: $0 [default|arm_cpu]" >&2
+    exit 1
+    ;;
+esac
+
 cat <<EOM
 Workspace prepared under: $ROOT_DIR
+Prepare profile: $PREPARE_PROFILE
 
 Projects available:
   - $INET_DIR
@@ -69,6 +115,23 @@ Projects available:
 
 Recorded exact commits in:
   - $VERSION_LOCK_FILE
+EOM
+
+if [ "$PREPARE_PROFILE" = "arm_cpu" ]; then
+  cat <<EOM
+
+ARM CPU mode completed:
+  - cloned repositories
+  - sourced OMNeT++ / INET environments
+  - built INET, ESTNET, and ESTNET-TEMPLATE
+
+Recommended next step:
+  1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
+  2. Or run ./set_estnet_time_ref.sh fixed  # debug/demo mode
+  3. Start simulation with opp_run or Qtenv from estnet-template/simulations
+EOM
+else
+  cat <<EOM
 
 Next step:
   1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
@@ -79,3 +142,4 @@ Next step:
      - estnet
      - estnet-template
 EOM
+fi

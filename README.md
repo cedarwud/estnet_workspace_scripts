@@ -41,6 +41,8 @@ After running the build and prepare scripts, the directory will typically look l
 chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh run_omnetpp_ide.sh
 ./build_omnetpp_env.sh
 ./prepare_estnet_workspace.sh
+# ARM CPU host that cannot rely on IDE build workflow:
+# ./prepare_estnet_workspace.sh arm_cpu
 ./set_estnet_time_ref.sh
 ./run_omnetpp_ide.sh
 ```
@@ -50,18 +52,6 @@ chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh
 - Default osgEarth tag: `osgearth-2.10`
 - This package is written to use `2.10` by default.
 - Unless you specifically need an older tag, do not switch back to `2.7`.
-- On ARM64 / aarch64 machines, use the dedicated ARM CPU build mode. It automatically disables FastDXT and also handles the `/usr/local/lib64` linker path problem seen on ARM installs:
-
-```bash
-./build_omnetpp_env.sh arm_cpu
-```
-
-ARM mode behavior:
-- disables FastDXT (`-DOSGEARTH_ENABLE_FASTDXT=OFF`)
-- requests install into `/usr/local/lib`
-- if osgEarth still lands in `/usr/local/lib64`, auto-registers that path with `ldconfig`
-- runs OMNeT++ `./configure` with ARM-friendly include/library flags
-- exports `PATH` so OMNeT++ `make` does not stop at the `bin is not in the path` check
 
 ## Important practical note about time reference and 3D rendering
 
@@ -120,25 +110,12 @@ Optional variables:
 - `OSGEARTH_TAG`
 - `RESET_OSGEARTH_TREE`
 - `OSGEARTH_CMAKE_ARGS`
-- positional build mode: `default` or `arm_cpu`
-- in `arm_cpu` mode, the script also passes ARM-friendly `CPPFLAGS` / `LDFLAGS`, exports `LD_LIBRARY_PATH`, and prepends `omnetpp-5.5.1/bin` to `PATH` for the current run
 
 Examples:
 
 ```bash
 ./build_omnetpp_env.sh
 ```
-
-```bash
-./build_omnetpp_env.sh arm_cpu
-```
-
-ARM mode behavior:
-- disables FastDXT (`-DOSGEARTH_ENABLE_FASTDXT=OFF`)
-- requests install into `/usr/local/lib`
-- if osgEarth still lands in `/usr/local/lib64`, auto-registers that path with `ldconfig`
-- runs OMNeT++ `./configure` with ARM-friendly include/library flags
-- exports `PATH` so OMNeT++ `make` does not stop at the `bin is not in the path` check
 
 ```bash
 OSGEARTH_TAG=osgearth-2.10 ./build_omnetpp_env.sh
@@ -158,11 +135,18 @@ What it does:
 - optionally checks out a requested `ESTNET_REF` / `ESTNET_TEMPLATE_REF`
 - checks that OMNeT++ and INET `setenv` files exist
 - writes exact current commits to `workspace_versions.lock`
+- in `arm_cpu` mode, it also builds `inet`, `estnet`, and `estnet-template` immediately, because some ARM/remote environments cannot rely on the OMNeT++ IDE build workflow
 
 Run it with:
 
 ```bash
 ./prepare_estnet_workspace.sh
+```
+
+ARM CPU host example:
+
+```bash
+./prepare_estnet_workspace.sh arm_cpu
 ```
 
 Reproducible example:
@@ -183,6 +167,11 @@ Optional variables:
 - `ESTNET_REF`
 - `ESTNET_TEMPLATE_REF`
 - `VERSION_LOCK_FILE`
+- `BUILD_JOBS`
+
+Profiles:
+- default: clone only, keep the original IDE-first workflow
+- arm_cpu: clone plus immediate project build (`inet`, `estnet`, `estnet-template`)
 
 ### 3. `set_estnet_time_ref.sh`
 Use this before the first ESTNeT simulation run.
