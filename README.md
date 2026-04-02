@@ -45,6 +45,8 @@ chmod +x build_omnetpp_env.sh prepare_estnet_workspace.sh set_estnet_time_ref.sh
 # ./prepare_estnet_workspace.sh arm_cpu
 ./set_estnet_time_ref.sh
 ./run_omnetpp_ide.sh
+# ARM CPU host runtime path:
+# ./run_omnetpp_ide.sh arm_cpu
 ```
 
 ## Practical version choice
@@ -233,16 +235,19 @@ TLE_FILE=./configs/tles/UWE3.tle ./set_estnet_time_ref.sh tle
 ```
 
 ### 4. `run_omnetpp_ide.sh`
-Use this for normal startup.
+This script now supports two profiles.
 
-What it does:
+Common behavior:
 - sources OMNeT++ `setenv`
 - sources INET `setenv` if `inet/` exists
 - exports `OSG_FILE_PATH` from `$OSGEARTH_DIR/data` so OSG can find data files such as `moon_1024x512.jpg`
 - keeps `OSGEARTH_DATA_PATH` available when present
 - prepends local osgEarth build libs to `LD_LIBRARY_PATH` when available
+- also keeps `/usr/local/lib` and `/usr/local/lib64` visible for ARM builds
 - optionally forces `QT_QPA_PLATFORM=xcb` if `FORCE_XCB=1`
-- launches `bin/omnetpp`
+
+Default profile:
+- launches the OMNeT++ Eclipse IDE launcher (`bin/omnetpp`)
 
 Run it with:
 
@@ -250,12 +255,35 @@ Run it with:
 ./run_omnetpp_ide.sh
 ```
 
+ARM CPU profile:
+- skips the OMNeT++ IDE launcher
+- directly starts ESTNET through `opp_run`
+- intended for hosts where OMNeT++ core/runtime builds succeed but the Eclipse IDE launcher is unreliable
+- default UI in this mode is `Qtenv`
+
+Run it with:
+
+```bash
+./run_omnetpp_ide.sh arm_cpu
+```
+
+ARM CPU + Cmdenv example:
+
+```bash
+./run_omnetpp_ide.sh arm_cpu Cmdenv
+```
+
 Optional variables:
 - `ROOT_DIR`
 - `OMNETPP_DIR`
 - `INET_DIR`
+- `ESTNET_DIR`
+- `ESTNET_TEMPLATE_DIR`
 - `OSGEARTH_DIR`
 - `FORCE_XCB`
+- `SIM_DIR`
+- `OMNETPP_INI`
+- `NED_PATH`
 
 Useful example:
 

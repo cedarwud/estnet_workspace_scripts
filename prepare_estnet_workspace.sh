@@ -37,6 +37,21 @@ ensure_repo() {
   fi
 }
 
+ensure_python_command() {
+  if command -v python >/dev/null 2>&1; then
+    return 0
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "ERROR: neither 'python' nor 'python3' is available" >&2
+    exit 1
+  fi
+
+  local shimdir="$ROOT_DIR/.prepare_shims"
+  mkdir -p "$shimdir"
+  ln -sf "$(command -v python3)" "$shimdir/python"
+  export PATH="$shimdir:$PATH"
+}
+
 build_project() {
   local project_dir="$1"
   local label="$2"
@@ -44,7 +59,7 @@ build_project() {
   echo "===== Building $label ====="
   cd "$project_dir"
 
-  if [ ! -f Makefile ]; then
+  if [ ! -f src/Makefile ]; then
     make makefiles
   fi
 
@@ -79,6 +94,7 @@ case "$PREPARE_PROFILE" in
   default|normal|x86|x86_64|"")
     ;;
   arm_cpu)
+    ensure_python_command
     export PATH="$OMNETPP_DIR/bin:$PATH"
     export CPPFLAGS="-I/usr/local/include${CPPFLAGS:+ $CPPFLAGS}"
     export LDFLAGS="-L/usr/local/lib -L/usr/local/lib64${LDFLAGS:+ $LDFLAGS}"
@@ -123,7 +139,7 @@ if [ "$PREPARE_PROFILE" = "arm_cpu" ]; then
 ARM CPU mode completed:
   - cloned repositories
   - sourced OMNeT++ / INET environments
-  - built INET, ESTNET, and ESTNET-TEMPLATE
+  - built INET, ESTNET, and ESTNET-TEMPLATE (with python shim when needed)
 
 Recommended next step:
   1. Run ./set_estnet_time_ref.sh        # default = tle (formal mode)
